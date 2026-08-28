@@ -1,0 +1,283 @@
+{
+  "communities": {
+    "0": [
+      "src_license",
+      "src_license_capturereturnedlicense",
+      "src_license_checkouturl",
+      "src_license_isoptimisticallyunlocked",
+      "src_license_removelicense",
+      "src_license_storedtoken",
+      "src_license_storelicense",
+      "src_license_verdict",
+      "src_license_verifylicense",
+      "src_main",
+      "src_main_crop",
+      "src_main_fileinput",
+      "src_main_frames",
+      "src_main_frameurls",
+      "src_main_loadpanel",
+      "src_main_printpanel",
+      "src_main_progressbar",
+      "src_main_progresswrap",
+      "src_main_proofpanel",
+      "src_main_refreshlicense",
+      "src_main_registerserviceworker",
+      "src_main_showupdate",
+      "src_main_status",
+      "src_main_submitlicense",
+      "src_main_updatelicenseui",
+      "src_main_video",
+      "src_main_workspace"
+    ],
+    "1": [
+      "axe_core_playwright",
+      "package",
+      "package_devdependencies",
+      "package_devdependencies_axe_core_playwright",
+      "package_devdependencies_playwright_test",
+      "package_devdependencies_typescript",
+      "package_devdependencies_vite",
+      "package_devdependencies_vitest",
+      "package_name",
+      "package_private",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_dev",
+      "package_scripts_preview",
+      "package_scripts_test",
+      "package_scripts_test_e2e",
+      "package_type",
+      "package_version",
+      "playwright_test",
+      "typescript",
+      "vite",
+      "vitest"
+    ],
+    "2": [
+      "ref_dom",
+      "ref_dom_iterable",
+      "ref_es2022",
+      "ref_playwright_config_ts",
+      "ref_src",
+      "ref_tests",
+      "ref_vite_config_ts",
+      "tsconfig",
+      "tsconfig_compileroptions",
+      "tsconfig_compileroptions_allowimportingtsextensions",
+      "tsconfig_compileroptions_isolatedmodules",
+      "tsconfig_compileroptions_lib",
+      "tsconfig_compileroptions_module",
+      "tsconfig_compileroptions_moduledetection",
+      "tsconfig_compileroptions_moduleresolution",
+      "tsconfig_compileroptions_noemit",
+      "tsconfig_compileroptions_skiplibcheck",
+      "tsconfig_compileroptions_strict",
+      "tsconfig_compileroptions_target",
+      "tsconfig_compileroptions_usedefineforclassfields",
+      "tsconfig_include"
+    ],
+    "3": [
+      "src_db_clearproject",
+      "src_db_loadproject",
+      "src_db_opendb",
+      "src_db_saveproject",
+      "src_main_canvasblob",
+      "src_main_currentproject",
+      "src_main_extractframes",
+      "src_main_importproject",
+      "src_main_persistsettings",
+      "src_main_prefersreducedmotion",
+      "src_main_printproof",
+      "src_main_renderallframes",
+      "src_main_renderproof",
+      "src_main_restoresavedproject",
+      "src_main_seekvideo",
+      "src_main_selectframe",
+      "src_main_setframes",
+      "src_main_setradio",
+      "src_main_startover",
+      "src_main_updateroute",
+      "src_proof_framelabel"
+    ],
+    "4": [
+      "src_db",
+      "src_db_projectsettings",
+      "src_db_storedproject",
+      "src_main_applycroppreset",
+      "src_main_buildprintroot",
+      "src_main_radiovalue",
+      "src_main_readcropinputs",
+      "src_main_synccropinputs",
+      "src_proof",
+      "src_proof_bindingside",
+      "src_proof_clamp",
+      "src_proof_crop",
+      "src_proof_frame_options",
+      "src_proof_frametimes",
+      "src_proof_normalizecrop",
+      "src_proof_pagenumbers",
+      "src_proof_pageorder",
+      "src_proof_safefilename",
+      "tests_proof_test"
+    ],
+    "5": [
+      "src_main_blobtodataurl",
+      "src_main_currentsettings",
+      "src_main_exportproject",
+      "src_main_handlemetadata",
+      "src_main_loadvideo",
+      "src_main_selectedcount",
+      "src_main_setupevents",
+      "src_main_showstatus",
+      "src_main_timelinevalues",
+      "src_main_updatenetworkstate",
+      "src_main_updatepace",
+      "src_main_updatetimeline",
+      "src_proof_formatduration"
+    ],
+    "6": [
+      "public_sw",
+      "public_sw_cachefirst",
+      "public_sw_networkfirst",
+      "public_sw_precache"
+    ],
+    "7": [
+      "playwright_config"
+    ],
+    "8": [
+      "src_vite_env_d"
+    ],
+    "9": [
+      "tests_e2e_app_spec"
+    ],
+    "10": [
+      "vite_config"
+    ]
+  },
+  "cohesion": {
+    "0": 0.12535612535612536,
+    "1": 0.09090909090909091,
+    "2": 0.09523809523809523,
+    "3": 0.1619047619047619,
+    "4": 0.15789473684210525,
+    "5": 0.2948717948717949,
+    "6": 0.5,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 1.0,
+    "10": 1.0
+  },
+  "gods": [
+    {
+      "id": "src_main_setupevents",
+      "label": "setupEvents()",
+      "degree": 20
+    },
+    {
+      "id": "src_main_extractframes",
+      "label": "extractFrames()",
+      "degree": 14
+    },
+    {
+      "id": "tsconfig_compileroptions",
+      "label": "compilerOptions",
+      "degree": 12
+    },
+    {
+      "id": "src_main_importproject",
+      "label": "importProject()",
+      "degree": 10
+    },
+    {
+      "id": "src_main_updatepace",
+      "label": "updatePace()",
+      "degree": 8
+    },
+    {
+      "id": "src_main_renderallframes",
+      "label": "renderAllFrames()",
+      "degree": 8
+    },
+    {
+      "id": "src_main_refreshlicense",
+      "label": "refreshLicense()",
+      "degree": 8
+    },
+    {
+      "id": "src_main_showstatus",
+      "label": "showStatus()",
+      "degree": 8
+    },
+    {
+      "id": "src_proof_normalizecrop",
+      "label": "normalizeCrop()",
+      "degree": 8
+    },
+    {
+      "id": "src_main_handlemetadata",
+      "label": "handleMetadata()",
+      "degree": 7
+    }
+  ],
+  "surprises": [
+    {
+      "source": "setupEvents()",
+      "target": "removeLicense()",
+      "source_files": [
+        "src/main.ts",
+        "src/license.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "loadVideo()",
+      "target": "safeFilename()",
+      "source_files": [
+        "src/main.ts",
+        "src/proof.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "extractFrames()",
+      "target": "frameTimes()",
+      "source_files": [
+        "src/main.ts",
+        "src/proof.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "restoreSavedProject()",
+      "target": "normalizeCrop()",
+      "source_files": [
+        "src/main.ts",
+        "src/proof.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "importProject()",
+      "target": "normalizeCrop()",
+      "source_files": [
+        "src/main.ts",
+        "src/proof.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    }
+  ],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}
