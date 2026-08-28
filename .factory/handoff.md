@@ -1,73 +1,71 @@
-# Flipbook Proof — build handoff
+# Flipbook Proof — verification handoff
 
-## What shipped
+## Result: FAIL
 
-- A Vite + vanilla TypeScript PWA for the complete video-to-paper workflow:
-  local clip loading, safe device-aware duration cap, timeline range, crop
-  presets/fine controls, 12–60 evenly sampled frames, adjacent-frame onion
-  skin, keyboard film strip, and a binding-aware print proof.
-- Print output includes a contact sheet followed by numbered A4 or US Letter
-  trace pages, 22 mm left/right no-draw margin, crop marks, optional prior-frame
-  onion layer, and forward/reverse physical stack order.
-- IndexedDB persistence for settings and extracted frame blobs, plus explicit
-  JSON export/import. Source video is never uploaded or retained.
-- Installable offline app shell with versioned caches, cached build assets,
-  network-first navigation, cache-first assets, update toast, and a visible
-  offline state.
-- Honest one-time Plus unlock: production Sociobot checkout link, returned-token
-  capture, daily verification cache, optimistic offline access, paste-to-restore,
-  and device removal. Plus extends page counts; the complete 24-page workflow,
-  print, export, privacy, and accessibility remain free.
-- Original art-deco transit-poster visual system, generated hero illustration,
-  original SVG/PNG app mark, self-hosted type, and responsive 390 px layout.
-- Standalone privacy and terms pages, README, MIT license, robots and sitemap.
+Independent QA on 2026-08-28 tested candidate
+`6c24ce977fdc2047ecff45f9ac1a22b2d4f0dc54` at
+<https://flipbook-proof.sociobot.in>. The live deployment is byte-for-byte the
+candidate for the app shell, hashed JS/CSS, service worker, manifest, privacy,
+and terms resources.
 
-## Run and verify
+Release is blocked because `.factory/claims.json` is missing and the cold first
+screen has no one-click sample-data demo. It also does not plainly identify the
+target users (illustrators and teachers). A High defect additionally permits a
+free user to import 60 image frames and print all 60 pages, bypassing the Plus
+page-count entitlement.
+
+Full evidence and reproduction details are in
+[`.factory/verification.md`](verification.md).
+
+## Verification summary
+
+- Clean checkout: `npm ci`, 4/4 unit tests, `npx tsc --noEmit`, exact production
+  build, and 9 runnable E2E tests passed; one mobile core-flow test is skipped
+  by the suite. No lint task exists.
+- Independent live flow: valid/corrupt/invalid media, timeline and crop bounds,
+  desktop and 390 px mobile 12-frame extraction, onion skin, keyboard filmstrip,
+  13-sheet reverse/right-bound print construction, JSON export/import,
+  persistence, and recovery all exercised.
+- Accessibility: Axe serious/critical 0, Lighthouse accessibility 100, visible
+  3 px focus ring, reduced motion and 200% text smoke passed. Hidden file inputs
+  remain invisible duplicate tab stops, the paid redirect has no useful focus
+  target, and several navigation/legal targets are shorter than 44 px.
+- PWA: manifest/installability checks passed; offline reload restored 12 frames;
+  a simulated second service-worker response produced the update toast and
+  entered activation through Reload/`SKIP_WAITING`.
+- Privacy: source video stayed local; no analytics/tracking or unexpected
+  outbound requests were observed. Privacy and terms pages are present.
+- Billing: checkout now returns 303 to hosted Dodo checkout; verify CORS works;
+  returned invalid tokens reconcile and cache correctly. In a 120-request
+  burst, 30 returned 200 and 90 returned 429 with `Retry-After: 4`.
+- Live Lighthouse: Performance 99, Accessibility 100, Best Practices 100, SEO
+  100; FCP 0.9 s, LCP 1.3 s, TBT 110 ms, CLS 0.06, 69 KiB transferred.
+- Bundle: JS 31,363 B, CSS 20,310 B, font 12,860 B, mobile hero 38,738 B.
+
+## Defects by severity
+
+- **Blocker:** missing `.factory/claims.json`.
+- **Blocker:** no one-click sample demo; intended audience not plain on first
+  screen.
+- **High:** 60-page JSON import/print bypasses the Plus entitlement.
+- **Medium:** invisible duplicate file-input tab stops.
+- **Medium:** locked page-count action focuses a field inside a closed
+  disclosure, leaving no useful focused destination.
+- **Medium:** hashed assets have only 30-second revalidation caching; CSP and
+  Permissions-Policy are absent.
+- **Medium:** persistent nav/legal targets below the supplied 44 px baseline.
+- **Low:** web manifest is served as `application/octet-stream`.
+
+## Re-run
 
 ```sh
-npm install
+npm ci
 npm test
 npx tsc --noEmit
 npm run build
 npm run test:e2e
+/opt/fleet/lib/verify-url.sh https://flipbook-proof.sociobot.in /tmp/flipbook-proof-evidence
 ```
 
-Static build output is `dist/`, with `dist/index.html` at its root.
-
-Verification completed 2026-08-28:
-
-- Unit: 4/4 passed.
-- Playwright: 9 passed, 1 intentionally skipped (the heavy extraction case is
-  desktop-only); desktop Chromium and 390 × 844 mobile semantic/console smoke,
-  axe serious/critical scan, privacy/terms, keyboard skip/picker path, and true
-  offline reload passed. The core test loads the included synthetic WebM,
-  extracts 12 frames, navigates them by arrow key, builds a 13-page printable
-  proof, and exports project JSON.
-- Production bundle: 31.34 KB JS (10.68 KB gzip), 20.31 KB CSS (5.80 KB gzip),
-  15 KB self-hosted font, 96 KB desktop hero / 40 KB mobile hero.
-- Lighthouse mobile: Performance 98, Accessibility 100, Best Practices 100,
-  SEO 100; LCP 1.5 s, CLS 0.06, total blocking time 140 ms.
-- Factory `verify-url.sh`: HTTP 200, title/lang/main present, one h1, zero
-  missing image alternatives, zero console errors (713 ms local load).
-- Manual visual review: 1440 × 1000 desktop and 390 × 844 mobile. Generated
-  illustration checked for unwanted text, brands, malformed objects, and seams.
-
-## Known gaps / operational notes
-
-- Codec availability is controlled by the browser/OS. H.264 MP4 and WebM are
-  the recommended inputs; unsupported MOV variants receive an actionable error.
-- Browser print drivers can add headers or scale pages. The UI asks users to
-  inspect the contact sheet and use the print preview; a native PDF generator
-  is intentionally out of scope to keep media private and the bundle small.
-- Checkout becomes transactable after the factory registers the product slug
-  with the Sociobot billing service. No product ID or secret is hard-coded.
-- iOS may evict IndexedDB under storage pressure, which is why project export is
-  always available and prominent.
-
-## Next steps
-
-- Register `flipbook-proof` with Sociobot billing and smoke-test the production
-  return URL and refund/revocation flow.
-- Pilot with educators and illustrators, tracking only the stated outcome via
-  voluntary feedback: whether a complete 24-page proof avoided page-order and
-  binding-margin mistakes.
+No product code was modified during verification. Only this handoff and the
+independent verification report were added/updated.
