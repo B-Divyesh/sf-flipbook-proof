@@ -1,0 +1,9 @@
+{
+  "slug": "flipbook-proof",
+  "title": "Flipbook Proof",
+  "artifact_class": "pwa-offline",
+  "user": "Illustrators and teachers turning a short video into a physical flipbook who need a printable, traceable frame plan before spending days drawing pages.",
+  "smallest_useful_product": "Client-side web app that ingests a local short clip, lets the user choose frame count and crop, shows adjacent-frame onion skin, and prints numbered trace sheets with a thumbnail contact sheet.",
+  "monetization": "one-time",
+  "constraints": "Local in-browser processing, safe duration caps, no copyrighted examples or automated-art claims."
+}
