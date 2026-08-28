@@ -47,6 +47,8 @@ Verification completed 2026-08-28:
   15 KB self-hosted font, 96 KB desktop hero / 40 KB mobile hero.
 - Lighthouse mobile: Performance 98, Accessibility 100, Best Practices 100,
   SEO 100; LCP 1.5 s, CLS 0.06, total blocking time 140 ms.
+- Factory `verify-url.sh`: HTTP 200, title/lang/main present, one h1, zero
+  missing image alternatives, zero console errors (713 ms local load).
 - Manual visual review: 1440 × 1000 desktop and 390 × 844 mobile. Generated
   illustration checked for unwanted text, brands, malformed objects, and seams.
 

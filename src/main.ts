@@ -155,7 +155,7 @@ app.innerHTML = `
       <div class="license-card">
         <p id="licenseState" class="license-state">Free plan · up to 24 pages</p>
         <a id="buyLink" class="button primary wide" href="${checkoutUrl()}">Buy Plus once · $12</a>
-        <details><summary>Have a license? Restore it</summary><form id="licenseForm"><label for="licenseToken">License token</label><div class="input-action"><input id="licenseToken" type="text" autocomplete="off" spellcheck="false" /><button type="submit">Verify</button></div><p id="licenseMessage" role="status"></p></form></details>
+        <details><summary>Have a license? Restore it</summary><form id="licenseForm"><label for="licenseToken">License token</label><div class="input-action"><input id="licenseToken" type="text" autocomplete="off" spellcheck="false" /><button type="submit" aria-label="Verify license">Verify</button></div><p id="licenseMessage" role="status"></p></form></details>
         <button id="removeLicense" class="text-button" type="button" hidden>Remove license from this device</button>
         <small>Sociobot/Dodo is the merchant of record. Refunds are handled there and revoke the license automatically.</small>
       </div>
