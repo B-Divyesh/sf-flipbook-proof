@@ -69,15 +69,32 @@ test('keyboard controls use visible buttons and persistent links meet the touch 
 });
 
 test('@claim:sample-sandbox opens realistic sample data and keeps it separate', async ({ page }) => {
-  await page.goto('/demo');
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Try it with sample data' }).click();
+  await expect(page).toHaveURL('/demo');
   await expect(page).toHaveTitle('Demo — Flipbook Proof');
   await expect(page.getByText('Demo — sample data, nothing is saved')).toBeVisible();
   await expect(page.locator('.frame-thumb')).toHaveCount(12);
   await expect(page.locator('#frameCaption')).toHaveText('Frame 1 of 12');
   await expect(page.locator('#proofCanvas')).toHaveAttribute('aria-label', /Frame 1 of 12/);
+  const proofTop = await page.locator('#proofPanel').evaluate((element) => element.getBoundingClientRect().top);
+  const viewportHeight = await page.evaluate(() => innerHeight);
+  expect(proofTop).toBeLessThan(viewportHeight - 120);
   const databases = await page.evaluate(async () => (await indexedDB.databases()).map((database) => database.name));
   expect(databases).toContain('demo:flipbook-proof');
-  expect(databases).not.toContain('flipbook-proof');
+  const realProjectExists = await page.evaluate(async () => {
+    const request = indexedDB.open('flipbook-proof');
+    return await new Promise<boolean>((resolve) => {
+      request.onsuccess = () => {
+        const get = request.result.transaction('projects').objectStore('projects').get('current');
+        get.onsuccess = () => resolve(Boolean(get.result));
+      };
+    });
+  });
+  expect(realProjectExists).toBe(false);
+  await page.evaluate(() => scrollTo(0, 1200));
+  await expect.poll(() => page.locator('#demoBanner').evaluate((element) => element.getBoundingClientRect().top)).toBe(0);
+  await page.evaluate(() => scrollTo(0, 0));
   await page.locator('#onionOpacity').fill('41');
   await page.getByRole('button', { name: 'Reset demo' }).click();
   await expect(page.locator('#onionOpacity')).toHaveValue('24');

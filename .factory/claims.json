@@ -4,7 +4,7 @@
     "claim": "The one-click demo loads a 12-page movement study and keeps its changes separate from real projects.",
     "where": "landing first screen, demo banner, README",
     "test": "npm run test:e2e -- --project=desktop --grep \"@claim:sample-sandbox \"",
-    "sandbox": "fresh browser context at /demo; assert populated output, demo-only IndexedDB, reset, and an empty real workspace"
+    "sandbox": "fresh home page; enter /demo in one click; assert first-viewport output, persistent banner, demo-only IndexedDB, reset, and an empty real workspace"
   },
   {
     "id": "print-proof",
