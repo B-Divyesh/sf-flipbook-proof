@@ -626,8 +626,8 @@ async function importProject(file?: File): Promise<void> {
     if (!validImportedSettings(data.settings)) throw new Error('settings');
     const importedFrames = await Promise.all(data.frames.map(async (value) => {
       if (typeof value !== 'string' || !/^data:image\/(png|jpe?g|webp|gif|svg\+xml)[;,]/i.test(value)) throw new Error('image');
-      const blob = await (await fetch(value)).blob();
-      if (blob.type === 'image/svg+xml') {
+      const blob = dataUrlToBlob(value);
+      if (blob.type.startsWith('image/svg+xml')) {
         const markup = await blob.text();
         if (/<(?:script|foreignObject)|\son[a-z]+\s*=|(?:href|src)\s*=|url\s*\(/i.test(markup)) throw new Error('unsafe-image');
         return new Blob([markup], { type: 'image/svg+xml' });
@@ -645,6 +645,21 @@ async function importProject(file?: File): Promise<void> {
     proofPanel.scrollIntoView({ block: 'start' });
   } catch { showStatus('error', 'That project file could not be imported. Choose a Flipbook Proof JSON export under 80 MB.'); }
   finally { ($('#importProject') as HTMLInputElement).value = ''; }
+}
+
+function dataUrlToBlob(value: string): Blob {
+  const comma = value.indexOf(',');
+  if (comma < 0) throw new Error('image');
+  const metadata = value.slice(5, comma);
+  const mimeType = metadata.split(';')[0].toLowerCase();
+  const payload = value.slice(comma + 1);
+  if (!mimeType.startsWith('image/')) throw new Error('image');
+  if (metadata.toLowerCase().split(';').includes('base64')) {
+    const binary = atob(payload);
+    const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+    return new Blob([bytes], { type: mimeType });
+  }
+  return new Blob([new TextEncoder().encode(decodeURIComponent(payload))], { type: mimeType });
 }
 
 function validImportedSettings(settings: ProjectSettings | undefined): settings is ProjectSettings {
