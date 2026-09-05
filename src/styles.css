@@ -230,7 +230,8 @@ footer .disclosure { grid-column: 1 / -1; margin: 0; font-size: .75rem; }
 .demo-mode .hero h1 { margin-bottom: 8px; font-size: clamp(2rem, 3vw, 3rem); }
 .demo-mode .hero .lede { margin-bottom: 0; }
 .demo-mode .studio { padding-top: 28px; }
-.demo-mode .section-heading, .demo-mode .route { display: none; }
+.demo-mode .section-heading { position: absolute; width: 1px; height: 1px; margin: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.demo-mode .route { display: none; }
 
 @media (max-width: 900px) {
   .site-header nav { display: none; }

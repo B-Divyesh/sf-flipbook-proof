@@ -95,6 +95,8 @@ test('@claim:sample-sandbox opens realistic sample data and keeps it separate', 
     });
   });
   expect(realProjectExists).toBe(false);
+  const accessibility = await new AxeBuilder({ page }).analyze();
+  expect(accessibility.violations).toEqual([]);
   await page.evaluate(() => scrollTo(0, 1200));
   await expect.poll(() => page.locator('#demoBanner').evaluate((element) => element.getBoundingClientRect().top)).toBe(0);
   await page.evaluate(() => scrollTo(0, 0));
