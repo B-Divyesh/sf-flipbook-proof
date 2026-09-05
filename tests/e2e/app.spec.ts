@@ -36,7 +36,10 @@ test('loads a clear, accessible first screen without console errors', async ({ p
   await expect(page.locator('h1')).toHaveCount(1);
   await expect(page.getByRole('heading', { name: 'Turn video into printable flipbook trace sheets' })).toBeVisible();
   await expect(page.getByText(/For illustrators and teachers/)).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Try it with sample data' })).toBeVisible();
+  const sampleAction = page.getByRole('link', { name: 'Try it with sample data' });
+  await expect(sampleAction).toBeVisible();
+  const firstScreenBottom = await page.locator('.hero-facts li').last().evaluate((element) => element.getBoundingClientRect().bottom);
+  expect(firstScreenBottom).toBeLessThanOrEqual(await page.evaluate(() => innerHeight));
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? ''))).toEqual([]);
   expect(errors).toEqual([]);
