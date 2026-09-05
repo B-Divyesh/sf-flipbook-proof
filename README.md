@@ -1,36 +1,45 @@
 # Flipbook Proof
 
-Flipbook Proof turns a short, local video into a printable plan for a physical
-flipbook. It is for illustrators and teachers who want to settle framing,
-exposure, page order, and binding margins before drawing every sheet.
+Flipbook Proof turns a short, local video into a printable frame plan for a
+physical flipbook. It is for illustrators and teachers checking frame order,
+onion-skin movement, and binding margins before drawing every page.
 
-Live product: <https://flipbook-proof.sociobot.in>
+- Product: <https://flipbook-proof.sociobot.in>
+- One-click sample: <https://flipbook-proof.sociobot.in/demo>
 
 ## What it does
 
-- Reads MP4, WebM, and MOV clips supported by the browser without uploading
-  them.
-- Samples 12 or 24 frames on the free plan; a one-time Plus license unlocks
-  36, 48, and 60-frame plans.
-- Crops a consistent drawing window and previews previous/next frames as an
-  adjustable onion skin.
-- Prints an A4 or US Letter contact sheet plus numbered trace pages with a
-  22 mm left- or right-binding margin and selectable stack order.
-- Saves extracted frames and settings in IndexedDB. Project JSON export/import
-  lets the user make backups or move devices.
-- Installs as an offline PWA. The source clip itself is never retained.
+- Reads a browser-supported MP4, WebM, or MOV without uploading the clip.
+- Samples 12 or 24 frames on the free plan.
+- Uses adjacent frames as an adjustable onion skin.
+- Prints a contact sheet and numbered A4 or US Letter trace pages.
+- Adds a 22 mm left or right binding margin and selected page order.
+- Saves extracted frames and settings in IndexedDB.
+- Exports and imports project JSON for backup or transfer.
+- Works offline after the first visit.
+
+Flipbook Proof Plus costs $12 once. A verified license adds 36, 48, and
+60-page proof printing. Import, export, and accessibility remain free.
+
+## Try the sample
+
+Open `/demo` or select **Try it with sample data**. The demo loads an original
+12-frame classroom pendulum study. Its IndexedDB and license keys use a
+`demo:` namespace, separate from real projects.
+
+The demo banner stays visible. **Reset demo** restores the sample. **Start for
+real** deletes demo data and opens an empty real workspace.
 
 ## Run locally
 
 Requires Node.js 20 or newer.
 
 ```sh
-npm install
+npm ci
 npm run dev
 ```
 
-Open the local URL shown by Vite. For the installable/offline path, use a
-production preview:
+For service-worker and offline checks, use the production preview:
 
 ```sh
 npm run build
@@ -40,33 +49,40 @@ npm run preview
 ## Verify
 
 ```sh
-npm test          # unit tests
-npm run build     # reproducible static output in ./dist
-npm run test:e2e  # Chromium desktop + 390 px mobile, axe and offline checks
+npm ci
+npm test
+npx tsc --noEmit
+npm run build
+npm run test:e2e
 ```
 
-The end-to-end suite uses a tiny original synthetic test clip in
-`tests/fixtures/`; it contains no third-party footage. Playwright 1.58.2 is
-pinned as required by the build environment.
+`.factory/claims.json` lists the command and sandbox for every public claim.
+Each claim test starts from the sample entry point. The browser suite also
+checks desktop, 390 px mobile, keyboard use, serious or critical Axe findings,
+reduced motion, privacy requests, invalid input, paid gating, and offline
+reload.
+
+The synthetic WebM fixture and pendulum sample are original repository assets.
+They contain no third-party footage.
 
 ## Deploy
 
-Deploy the contents of `dist/` as a static site with SPA fallback to
-`index.html`. `/privacy/` and `/terms/` are emitted as standalone pages. The
-factory registers the Sociobot product separately; this repository contains no
-payment-provider keys or product IDs.
+Deploy `dist/` as one static site. `staticwebapp.config.json` provides the
+`/demo` rewrite, designed 404 response, security headers, manifest MIME type,
+and immutable asset caching. The factory registers billing separately. The
+repository contains no payment-provider key.
 
-## Privacy and limitations
+## Privacy and limits
 
-Video processing and frame persistence are browser-local. Only a pasted or
+Video processing and project storage are browser-local. Only a pasted or
 returned Plus token is sent to the Sociobot verification API. Browser codec
-support varies—H.264 MP4 and WebM are the most reliable choices. Read the full
-[privacy policy](https://flipbook-proof.sociobot.in/privacy/) and
+support and printer scaling vary, so inspect one test page first.
+
+Read [privacy](https://flipbook-proof.sociobot.in/privacy/) and
 [terms](https://flipbook-proof.sociobot.in/terms/).
 
-The researched scope is in [`.factory/brief.json`](.factory/brief.json) and the
-original visual system and image provenance are in
-[`.factory/design.md`](.factory/design.md).
+The researched scope is in [`.factory/brief.json`](.factory/brief.json). The
+visual system and asset provenance are in [`.factory/design.md`](.factory/design.md).
 
 ## License
 

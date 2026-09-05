@@ -3,7 +3,7 @@
   "name": "Flipbook Proof",
   "short_name": "Flipbook",
   "description": "Private, local-first video-to-flipbook trace sheet planner.",
-  "start_url": "/?v=1",
+  "start_url": "/?v=2",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",

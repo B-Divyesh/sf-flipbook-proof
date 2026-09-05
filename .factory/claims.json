@@ -1,0 +1,65 @@
+[
+  {
+    "id": "sample-sandbox",
+    "claim": "The one-click demo loads a 12-page movement study and keeps its changes separate from real projects.",
+    "where": "landing first screen, demo banner, README",
+    "test": "npm run test:e2e -- --project=desktop --grep \"@claim:sample-sandbox \"",
+    "sandbox": "fresh browser context at /demo; assert populated output, demo-only IndexedDB, reset, and an empty real workspace"
+  },
+  {
+    "id": "print-proof",
+    "claim": "Printing builds a contact sheet and numbered trace pages with a 22 mm binding margin and selected page order.",
+    "where": "landing first screen, print panel, README",
+    "test": "npm run test:e2e -- --project=desktop --grep \"@claim:print-proof \"",
+    "sandbox": "sample project; choose right binding and reverse order; inspect the print document and computed print margin"
+  },
+  {
+    "id": "project-transfer",
+    "claim": "Project JSON export and import preserve extracted frames and settings.",
+    "where": "print panel, README, privacy page",
+    "test": "npm run test:e2e -- --project=desktop --grep \"@claim:project-transfer \"",
+    "sandbox": "sample project; parse the downloaded JSON, import a moved project, and reload its frames"
+  },
+  {
+    "id": "local-only-video",
+    "claim": "Source video and extracted frames stay on the device; the workflow sends no video or analytics request.",
+    "where": "landing facts, load panel, privacy page, README",
+    "test": "npm run test:e2e -- --project=desktop --grep \"@claim:local-only-video \"",
+    "sandbox": "demo context with the shipped WebM; record every request through completed frame extraction and require same-origin only"
+  },
+  {
+    "id": "offline-reload",
+    "claim": "The app and its sample proof work offline after the first visit.",
+    "where": "landing facts, network status, README",
+    "test": "npm run test:e2e -- --project=desktop --grep \"@claim:offline-reload \"",
+    "sandbox": "dedicated fresh browser context at /demo; wait for service-worker control, go offline, reload, and inspect all 12 frames"
+  },
+  {
+    "id": "project-persistence",
+    "claim": "Extracted frames and project settings survive a browser refresh.",
+    "where": "privacy page, README",
+    "test": "npm run test:e2e -- --project=desktop --grep \"@claim:project-persistence \"",
+    "sandbox": "sample namespace; change onion opacity, binding edge, and page order, then reload and compare the restored state"
+  },
+  {
+    "id": "free-page-limit",
+    "claim": "The free plan prints up to 24 pages; larger imports remain inspectable, keyboard accessible, and exportable but cannot print.",
+    "where": "pricing, print panel, terms, README",
+    "test": "npm run test:e2e -- --project=desktop --grep \"@claim:free-page-limit \"",
+    "sandbox": "sample namespace; import 24 and 60-frame projects, assert the 24-page print, keyboard inspection, export, 60-page print block, and focus destination"
+  },
+  {
+    "id": "plus-page-counts",
+    "claim": "A verified $12 one-time Plus license enables 36, 48, and 60-page proof printing.",
+    "where": "landing facts, pricing, terms, README",
+    "test": "npm run test:e2e -- --project=desktop --grep \"@claim:plus-page-counts \"",
+    "sandbox": "sample namespace with a recorded valid verification response; import 60 frames and assert one contact sheet plus 60 print pages"
+  },
+  {
+    "id": "video-limits",
+    "claim": "The app rejects non-video input and clips above the device limit, then accepts a valid short WebM.",
+    "where": "video picker, README",
+    "test": "npm run test:e2e -- --project=desktop --grep \"@claim:video-limits \"",
+    "sandbox": "sample namespace; try text input, simulate a 60.11-second desktop boundary, then recover with the shipped WebM"
+  }
+]

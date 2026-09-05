@@ -4,14 +4,25 @@
 body { margin: 0; }
 a { color: #083e43; text-underline-offset: 3px; }
 a:focus-visible { outline: 3px solid #b84937; outline-offset: 3px; }
-header, main, footer { padding: 24px max(20px, calc((100vw - 760px)/2)); }
-header { border-bottom: 1px solid #8d8778; }
-header a { font-weight: 800; text-transform: uppercase; text-decoration: none; }
+.skip-link { position: fixed; z-index: 10; top: 8px; left: 8px; padding: 10px 16px; color: white; background: #172b2b; transform: translateY(-150%); }
+.skip-link:focus { transform: translateY(0); }
+header, main, footer { padding: 24px max(20px, calc((100vw - 900px)/2)); }
+header { display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid #8d8778; }
+header nav, footer nav { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+header a { min-height: 44px; display: inline-flex; align-items: center; font-weight: 800; text-transform: uppercase; text-decoration: none; }
+header nav a { text-transform: none; }
 main { min-height: calc(100vh - 170px); padding-top: 64px; padding-bottom: 80px; }
+main a { min-height: 44px; display: inline-flex; align-items: center; }
 h1, h2 { font-family: 'League Spartan', 'Arial Narrow', sans-serif; line-height: 1; text-transform: uppercase; }
 h1 { max-width: 12ch; margin: 0 0 24px; font-size: clamp(3rem, 9vw, 5rem); }
 h2 { margin-top: 40px; font-size: 1.5rem; }
 p, li { max-width: 68ch; }
 .eyebrow { color: #083e43; font-size: .8rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
 footer { color: #52615d; border-top: 1px solid #8d8778; font-size: .85rem; }
+footer a { min-height: 44px; display: inline-flex; align-items: center; }
+.not-found { display: grid; align-content: center; }
+.page-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.page-actions a { min-height: 48px; display: inline-flex; align-items: center; border: 2px solid #083e43; padding: 8px 12px; font-weight: 800; text-decoration: none; }
+.page-actions a:first-child { color: white; background: #083e43; }
+@media (max-width: 620px) { header { align-items: flex-start; flex-direction: column; gap: 4px; } main { padding-top: 44px; } footer nav { flex-direction: column; } }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }

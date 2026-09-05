@@ -1,0 +1,15 @@
+{
+  "slug": "flipbook-proof",
+  "name": "Flipbook Proof Plus",
+  "price_minor": 1200,
+  "currency": "USD",
+  "price_type": "one_time_price",
+  "return_url": "https://flipbook-proof.sociobot.in/",
+  "price_evidence": "The existing product, terms, and verified live checkout advertise Plus for $12 once.",
+  "paid_features": [
+    "36-page proof printing",
+    "48-page proof printing",
+    "60-page proof printing"
+  ],
+  "license_validation_path": "https://api.sociobot.in/api/v1/products/flipbook-proof/verify?license={token}"
+}

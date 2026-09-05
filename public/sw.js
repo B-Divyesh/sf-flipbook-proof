@@ -1,7 +1,7 @@
-const VERSION = 'flipbook-proof-v3';
+const VERSION = 'flipbook-proof-v4';
 const SHELL = `${VERSION}-shell`;
 const RUNTIME = `${VERSION}-runtime`;
-const PRECACHE = ['/', '/index.html', '/manifest.webmanifest', '/assets/icon.svg', '/assets/icon-192.png', '/assets/icon-512.png', '/assets/icon-512-maskable.png', '/assets/hero-workbench-720.webp', '/assets/hero-workbench-1200.webp', '/privacy/', '/terms/'];
+const PRECACHE = ['/', '/index.html', '/manifest.webmanifest', '/404.html', '/assets/icon.svg', '/assets/icon-192.png', '/assets/icon-512.png', '/assets/icon-512-maskable.png', '/assets/sf-flipbook-proof-apple-touch.png', '/assets/hero-workbench-720.webp', '/assets/hero-workbench-1200.webp', '/privacy/', '/terms/'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {

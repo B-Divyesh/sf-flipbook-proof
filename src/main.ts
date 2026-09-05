@@ -1,9 +1,20 @@
 import './styles.css';
-import { clearProject, loadProject, saveProject, type ProjectSettings, type StoredProject } from './db';
-import { captureReturnedLicense, checkoutUrl, isOptimisticallyUnlocked, removeLicense, storeLicense, storedToken, verifyLicense } from './license';
+import { clearProject, loadProject, saveProject, type ProjectSettings, type StorageNamespace, type StoredProject } from './db';
+import { captureReturnedLicense, checkoutUrl, configureLicenseStorage, isOptimisticallyUnlocked, removeLicense, storeLicense, storedToken, verifyLicense } from './license';
 import { FRAME_OPTIONS, formatDuration, frameLabel, frameTimes, normalizeCrop, pageNumbers, safeFilename, type Crop } from './proof';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
+const isDemo = location.pathname.replace(/\/+$/, '') === '/demo' || new URLSearchParams(location.search).get('demo') === '1';
+const storageNamespace: StorageNamespace = isDemo ? 'demo' : 'real';
+configureLicenseStorage(isDemo);
+document.body.classList.toggle('demo-mode', isDemo);
+document.title = isDemo ? 'Demo — Flipbook Proof' : 'Flipbook Proof — make printable trace sheets';
+if (isDemo) {
+  document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute('href', 'https://flipbook-proof.sociobot.in/demo');
+  document.querySelector<HTMLMetaElement>('meta[property="og:url"]')?.setAttribute('content', 'https://flipbook-proof.sociobot.in/demo');
+  document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.setAttribute('content', 'Demo — Flipbook Proof');
+  document.querySelector<HTMLMetaElement>('meta[name="twitter:title"]')?.setAttribute('content', 'Demo — Flipbook Proof');
+}
 
 app.innerHTML = `
   <header class="site-header">
@@ -12,36 +23,45 @@ app.innerHTML = `
       <span>Flipbook Proof</span>
     </a>
     <nav aria-label="Main navigation">
-      <a href="#studio">Studio</a>
+      <a href="/demo">Demo</a>
       <a href="#how">How it works</a>
-      <a href="#unlock">Unlock</a>
+      <a href="#unlock">Plus</a>
+      <a href="/privacy/">Privacy</a>
     </nav>
-    <span id="networkStatus" class="network-status" role="status">Works offline</span>
+    <span id="networkStatus" class="network-status" role="status">Offline ready</span>
   </header>
+
+  <aside id="demoBanner" class="demo-banner" aria-label="Demo status" ${isDemo ? '' : 'hidden'}>
+    <strong>Demo — sample data, nothing is saved</strong>
+    <span>Changes stay separate from your projects.</span>
+    <div><button id="resetDemo" type="button">Reset demo</button><a href="/" id="startReal">Start for real</a></div>
+  </aside>
 
   <main id="main" tabindex="-1">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-copy">
-        <p class="eyebrow"><span>Local-first</span> Flipbook planning room</p>
-        <h1 id="hero-title">Proof the motion.<br><em>Then draw it.</em></h1>
-        <p class="lede">Turn a short video into numbered, onion-skinned trace sheets with a binding-safe margin—before you spend a day drawing the wrong pages.</p>
+        <p class="eyebrow"><span>Local-first</span> Video-to-print planner</p>
+        <h1 id="hero-title">Turn video into printable flipbook trace sheets</h1>
+        <p class="lede">For illustrators and teachers who need to check frame order and binding margins before drawing.</p>
         <div class="hero-actions">
-          <a class="button primary" href="#studio">Choose your video</a>
-          <span class="privacy-note"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10V7a5 5 0 0 1 10 0v3m-12 0h14v11H5z"/></svg> Your clip never leaves this device</span>
+          <a class="button primary" href="/demo">Try it with sample data</a>
+          <span class="action-note">Loads a 12-page movement study.</span>
         </div>
+        <a class="real-start" href="#studio">Or choose your own video</a>
+        <ul class="hero-facts"><li>Your video stays on this device.</li><li>Works offline after the first visit.</li><li>Plus costs $12 once for 36–60 pages.</li></ul>
       </div>
       <figure class="hero-art">
         <picture>
           <source media="(max-width: 620px)" srcset="/assets/hero-workbench-720.webp" />
           <img src="/assets/hero-workbench-1200.webp" width="1200" height="800" fetchpriority="high" alt="Art-deco illustration of motion frames becoming a hand-bound flipbook on an artist's workbench" />
         </picture>
-        <figcaption>From moving reference to a page-by-page route.</figcaption>
+        <figcaption>Shows source frames beside numbered trace pages.</figcaption>
       </figure>
     </section>
 
     <section id="studio" class="studio" aria-labelledby="studio-title">
       <div class="section-heading">
-        <div><p class="eyebrow">The proof room</p><h2 id="studio-title">Build your trace plan</h2></div>
+        <div><p class="eyebrow">Video-to-print tool</p><h2 id="studio-title">Build your trace plan</h2></div>
         <button id="startOver" class="text-button" type="button" hidden>Start over</button>
       </div>
 
@@ -58,11 +78,11 @@ app.innerHTML = `
       <section id="loadPanel" class="load-panel" aria-labelledby="load-title">
         <div class="ticket-number" aria-hidden="true">01</div>
         <div>
-          <h3 id="load-title">Bring in one short clip</h3>
+          <h3 id="load-title">Choose one short video</h3>
           <p>MP4, WebM, or MOV supported by your browser. Up to <span id="durationCap">60</span> seconds. We keep only extracted frames, never the source video.</p>
         </div>
-        <label class="file-button" for="videoFile">Choose video</label>
-        <input id="videoFile" type="file" accept="video/mp4,video/webm,video/quicktime,video/*" />
+        <button id="chooseVideo" class="file-button" type="button">Choose video</button>
+        <input id="videoFile" tabindex="-1" aria-label="Video file" type="file" accept="video/mp4,video/webm,video/quicktime,video/*" />
         <p class="drop-note">or drop a clip anywhere in this panel</p>
       </section>
 
@@ -91,7 +111,7 @@ app.innerHTML = `
         </section>
 
         <section class="pace-column" aria-labelledby="pace-title">
-          <div class="panel-heading"><span class="step-tag">03 · Pace</span><h3 id="pace-title">Choose the beats</h3></div>
+          <div class="panel-heading"><span class="step-tag">03 · Timing</span><h3 id="pace-title">Choose frame timing</h3></div>
           <div class="range-grid timeline-fields">
             <label>Start <output id="startOut">0:00</output><input id="clipStart" type="range" min="0" max="1" value="0" step="0.05" /></label>
             <label>End <output id="endOut">0:00</output><input id="clipEnd" type="range" min="0" max="1" value="1" step="0.05" /></label>
@@ -130,28 +150,35 @@ app.innerHTML = `
       </section>
 
       <section id="printPanel" class="print-panel" aria-labelledby="print-title" hidden>
-        <div class="panel-heading"><span class="step-tag">05 · Print</span><h3 id="print-title">Set the physical stack</h3></div>
+        <div class="panel-heading"><span class="step-tag">05 · Print</span><h3 id="print-title">Set page order and margins</h3></div>
         <div class="print-settings">
           <fieldset><legend>Paper</legend><label><input type="radio" name="pageSize" value="A4" checked /> A4</label><label><input type="radio" name="pageSize" value="letter" /> US Letter</label></fieldset>
           <fieldset><legend>Binding margin</legend><label><input type="radio" name="bindingSide" value="left" checked /> Left edge</label><label><input type="radio" name="bindingSide" value="right" /> Right edge</label></fieldset>
           <fieldset><legend>Stack order</legend><label><input type="radio" name="pageOrder" value="forward" checked /> 1 → last</label><label><input type="radio" name="pageOrder" value="reverse" /> Last → 1</label></fieldset>
         </div>
-        <div class="print-callout"><span aria-hidden="true">✦</span><p><strong>Your proof includes</strong> a contact sheet, <span id="sheetCount">24</span> numbered trace pages, crop marks, and a 22 mm no-draw binding margin.</p></div>
+        <div class="print-callout"><span aria-hidden="true">✦</span><p><strong>Your proof includes</strong> a contact sheet, <span id="sheetCount">24</span> numbered trace pages, crop marks, and a 22 mm binding margin.</p></div>
+        <p id="printGateMessage" class="print-gate" role="status" hidden></p>
         <div class="action-row">
           <button id="printProof" class="button primary" type="button">Print proof / save PDF</button>
           <button id="exportProject" class="button secondary" type="button">Export project</button>
-          <label class="button secondary import-button" for="importProject">Import project</label><input id="importProject" type="file" accept="application/json,.json" />
+          <button id="chooseImport" class="button secondary" type="button">Import project</button><input id="importProject" tabindex="-1" aria-label="Flipbook Proof project file" type="file" accept="application/json,.json" />
         </div>
       </section>
     </section>
 
     <section id="how" class="how" aria-labelledby="how-title">
-      <p class="eyebrow">A clean first stack</p><h2 id="how-title">Three decisions before pencil meets paper</h2>
-      <ol><li><span>01</span><h3>Crop the action</h3><p>Keep the subject large and every sheet consistent.</p></li><li><span>02</span><h3>Check the in-betweens</h3><p>Onion skin exposes jumps before they become drawings.</p></li><li><span>03</span><h3>Bind with confidence</h3><p>Page order and no-draw margins survive the trip to paper.</p></li></ol>
+      <p class="eyebrow">How it works</p><h2 id="how-title">Make a print plan in three steps</h2>
+      <ol><li><span>01</span><h3>Crop the subject</h3><p>Keep the subject large and every sheet consistent.</p></li><li><span>02</span><h3>Check nearby frames</h3><p>Onion skin shows jumps before you draw them.</p></li><li><span>03</span><h3>Set the page order</h3><p>Choose the binding edge and print direction.</p></li></ol>
+    </section>
+
+    <section class="limits" aria-labelledby="limits-title">
+      <p class="eyebrow">Scope and privacy</p><h2 id="limits-title">Know what stays manual</h2>
+      <p>The app selects reference frames. It does not draw, trace, host, or share your video.</p>
+      <p>Your browser handles the work. Codec support and printer scaling can vary by device.</p>
     </section>
 
     <section id="unlock" class="unlock" aria-labelledby="unlock-title">
-      <div><p class="eyebrow">One project, one useful free tier</p><h2 id="unlock-title">24 pages are free.<br>Longer stories are yours for $12.</h2><p>Flipbook Proof Plus is a one-time purchase. Unlock 36, 48, and 60-page proofs on your devices. Printing, project export, accessibility, and privacy are always free.</p></div>
+      <div><p class="eyebrow">Pricing</p><h2 id="unlock-title">Use 24 pages free.<br>Pay once for 36–60 pages.</h2><p>Flipbook Proof Plus costs $12 once. It adds 36, 48, and 60-page proof printing. Project import, export, and accessibility remain free.</p></div>
       <div class="license-card">
         <p id="licenseState" class="license-state">Free plan · up to 24 pages</p>
         <a id="buyLink" class="button primary wide" href="${checkoutUrl()}">Buy Plus once · $12</a>
@@ -162,9 +189,9 @@ app.innerHTML = `
     </section>
   </main>
 
-  <footer><div class="brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>Flipbook Proof</span></div><p>Private source video. Local frame extraction. No account required.</p><nav aria-label="Legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://sociobot.in">A Param Factory product</a></nav><p class="disclosure">Hero artwork generated for this product; no example footage is included.</p></footer>
+  <footer><div class="brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>Flipbook Proof</span></div><p>Turn a local video into numbered trace sheets.</p><nav aria-label="Legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://sociobot.in">Built by Param Factory</a></nav><p class="disclosure">Version 1.1.0 · Hero artwork was generated for this product. No example footage is included.</p></footer>
   <div id="printRoot" aria-hidden="true"></div>
-  <div id="updateToast" class="toast" role="status" hidden><span>An updated proof room is ready.</span><button type="button">Reload</button></div>
+  <div id="updateToast" class="toast" role="status" hidden><span>An app update is ready.</span><button type="button">Reload</button></div>
 `;
 
 const $ = <T extends HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
@@ -191,9 +218,9 @@ let cancelRequested = false;
 let unlocked = false;
 
 captureReturnedLicense();
-void refreshLicense(false);
-void restoreSavedProject();
 setupEvents();
+void refreshLicense(false);
+void initializeProject();
 registerServiceWorker();
 updateNetworkState();
 
@@ -205,12 +232,8 @@ function setupEvents(): void {
     const file = (event as DragEvent).dataTransfer?.files[0];
     if (file) void loadVideo(file);
   });
-  const fileLabel = document.querySelector<HTMLLabelElement>('label[for="videoFile"]')!;
-  fileLabel.tabIndex = 0;
-  fileLabel.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); fileInput.click(); } });
-  const importLabel = document.querySelector<HTMLLabelElement>('label[for="importProject"]')!;
-  importLabel.tabIndex = 0;
-  importLabel.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); ($('#importProject') as HTMLInputElement).click(); } });
+  $('#chooseVideo').addEventListener('click', () => fileInput.click());
+  $('#chooseImport').addEventListener('click', () => ($('#importProject') as HTMLInputElement).click());
   video.addEventListener('loadedmetadata', handleMetadata);
   video.addEventListener('error', () => showStatus('error', 'This browser could not read that clip. Try an MP4 (H.264) or WebM file.'));
 
@@ -240,6 +263,8 @@ function setupEvents(): void {
   $('#startOver').addEventListener('click', () => void startOver());
   $('#licenseForm').addEventListener('submit', (event) => void submitLicense(event));
   $('#removeLicense').addEventListener('click', () => { removeLicense(); void refreshLicense(false); });
+  $('#resetDemo')?.addEventListener('click', () => void resetDemo());
+  $('#startReal')?.addEventListener('click', (event) => { event.preventDefault(); void leaveDemo(); });
   addEventListener('online', updateNetworkState);
   addEventListener('offline', updateNetworkState);
 }
@@ -344,7 +369,7 @@ function updatePace(): void {
 
 async function extractFrames(): Promise<void> {
   const count = selectedCount();
-  if (count > 24 && !unlocked) { location.hash = 'unlock'; $('#licenseToken').focus(); return; }
+  if (count > 24 && !unlocked) { showPaidGate(count, 'extract'); return; }
   if (extracting || !video.src) return;
   const { start, end } = timelineValues();
   const times = frameTimes(start, end, count);
@@ -369,8 +394,8 @@ async function extractFrames(): Promise<void> {
       progressBar.value = percent; $('#progressText').textContent = `${percent}%`;
     }
     setFrames(output);
-    const project = currentProject(); await saveProject(project);
-    showStatus('success', `${count} frames are ready and saved on this device.`);
+    const project = currentProject(); await saveProject(project, storageNamespace);
+    showStatus('success', isDemo ? `${count} frames are ready in this demo.` : `${count} frames are ready and saved on this device.`);
     renderAllFrames(); updateRoute(4);
     proofPanel.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
   } catch (error) {
@@ -411,7 +436,7 @@ function renderAllFrames(): void {
     const img = document.createElement('img'); img.src = url; img.alt = ''; const number = document.createElement('span'); number.textContent = String(index + 1).padStart(2, '0');
     button.append(img, number); button.addEventListener('click', () => selectFrame(index)); strip.append(button);
   });
-  renderProof(); updateRoute(5);
+  renderProof(); updatePaidActions(); updateRoute(5);
 }
 
 function selectFrame(index: number): void {
@@ -450,29 +475,101 @@ function currentSettings(): ProjectSettings {
 
 function currentProject(): StoredProject { return { settings: currentSettings(), frames }; }
 function radioValue(name: string): string { return document.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`)?.value ?? ''; }
-async function persistSettings(): Promise<void> { if (frames.length) await saveProject(currentProject()); }
+async function persistSettings(): Promise<void> { if (frames.length) await saveProject(currentProject(), storageNamespace); }
 
-async function restoreSavedProject(): Promise<void> {
+async function initializeProject(): Promise<void> {
   try {
-    const project = await loadProject(); if (!project?.frames.length) return;
-    sourceName = project.settings.name; duration = project.settings.sourceDuration; crop = normalizeCrop(project.settings.crop); setFrames(project.frames);
-    ($('#onionMode') as HTMLSelectElement).value = project.settings.onionMode; ($('#onionOpacity') as HTMLInputElement).value = String(project.settings.onionOpacity);
-    setRadio('pageSize', project.settings.pageSize); setRadio('bindingSide', project.settings.bindingSide); setRadio('pageOrder', project.settings.pageOrder);
-    loadPanel.hidden = false; loadPanel.classList.add('saved-state');
-    $('#load-title').textContent = 'Your saved proof is ready';
-    loadPanel.querySelector('p')!.textContent = `${project.frames.length} extracted frames from “${project.settings.name}” are stored on this device. Choose another video to replace it.`;
-    ($('#startOver') as HTMLButtonElement).hidden = false; renderAllFrames();
-    showStatus('success', `Restored ${project.frames.length} locally saved frames. The source clip was not retained.`);
+    const project = await loadProject(storageNamespace);
+    if (project?.frames.length) {
+      restoreProject(project, isDemo);
+      return;
+    }
+    if (isDemo) await seedDemo();
   } catch { showStatus('warning', 'The saved project could not be restored. Choose the source clip to begin again.'); }
+}
+
+function restoreProject(project: StoredProject, demo: boolean): void {
+  sourceName = project.settings.name;
+  duration = project.settings.sourceDuration;
+  crop = normalizeCrop(project.settings.crop);
+  setFrames(project.frames);
+  ($('#onionMode') as HTMLSelectElement).value = project.settings.onionMode;
+  ($('#onionOpacity') as HTMLInputElement).value = String(project.settings.onionOpacity);
+  setRadio('frameCount', String(project.frames.length));
+  setRadio('pageSize', project.settings.pageSize);
+  setRadio('bindingSide', project.settings.bindingSide);
+  setRadio('pageOrder', project.settings.pageOrder);
+  const start = $('#clipStart') as HTMLInputElement;
+  const end = $('#clipEnd') as HTMLInputElement;
+  start.max = String(duration);
+  start.value = String(project.settings.start);
+  end.max = String(duration);
+  end.value = String(project.settings.end);
+  loadPanel.hidden = demo;
+  loadPanel.classList.add('saved-state');
+  $('#load-title').textContent = demo ? 'Sample movement study' : 'Your saved proof is ready';
+  loadPanel.querySelector('p')!.textContent = demo
+    ? `${project.frames.length} pendulum frames are ready. Change the onion skin, page order, or print settings.`
+    : `${project.frames.length} extracted frames from “${project.settings.name}” are stored on this device. Choose another video to replace them.`;
+  ($('#startOver') as HTMLButtonElement).hidden = demo;
+  renderAllFrames();
+  showStatus('success', demo
+    ? `Sample loaded with ${project.frames.length} frames. Demo changes stay separate from your projects.`
+    : `Restored ${project.frames.length} locally saved frames. The source clip was not retained.`);
+}
+
+async function seedDemo(): Promise<void> {
+  const sample = createSampleProject();
+  await saveProject(sample, 'demo');
+  restoreProject(sample, true);
+}
+
+function createSampleProject(): StoredProject {
+  const sampleFrames = Array.from({ length: 12 }, (_, index) => {
+    const phase = index / 11;
+    const angle = -52 + phase * 104;
+    const radians = angle * Math.PI / 180;
+    const bobX = 480 + Math.sin(radians) * 190;
+    const bobY = 115 + Math.cos(radians) * 190;
+    const shadowX = 480 + Math.sin(radians) * 125;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540"><rect width="960" height="540" fill="#fff9ec"/><path d="M120 430H840" stroke="#c7b997" stroke-width="5"/><path d="M280 98H680M480 98V42" stroke="#172b2b" stroke-width="16" stroke-linecap="square"/><path d="M480 108L${bobX.toFixed(1)} ${bobY.toFixed(1)}" stroke="#0d5c63" stroke-width="8"/><circle cx="${bobX.toFixed(1)}" cy="${bobY.toFixed(1)}" r="48" fill="#b84937" stroke="#172b2b" stroke-width="7"/><ellipse cx="${shadowX.toFixed(1)}" cy="425" rx="72" ry="13" fill="#172b2b" opacity=".14"/><path d="M160 175h90M160 205h55M710 175h90M745 205h55" stroke="#c58b22" stroke-width="7"/><path d="M95 80v70M95 80h70M865 80h-70M865 80v70M95 460v-70M95 460h70M865 460h-70M865 460v-70" fill="none" stroke="#52615d" stroke-width="4"/></svg>`;
+    return new Blob([svg], { type: 'image/svg+xml' });
+  });
+  const now = new Date().toISOString();
+  return {
+    settings: {
+      name: 'classroom-pendulum-study', createdAt: now, updatedAt: now, sourceDuration: 2.2,
+      start: 0, end: 2.2, count: 12, crop: { x: 0, y: 0, width: 100, height: 100 },
+      onionMode: 'previous', onionOpacity: 24, pageSize: 'A4', bindingSide: 'left', pageOrder: 'forward',
+    },
+    frames: sampleFrames,
+  };
+}
+
+async function resetDemo(): Promise<void> {
+  if (!isDemo) return;
+  await clearProject('demo');
+  removeLicense();
+  setFrames([]);
+  $('#printRoot').replaceChildren();
+  await seedDemo();
+  proofPanel.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+}
+
+async function leaveDemo(): Promise<void> {
+  await clearProject('demo');
+  removeLicense();
+  location.assign('/');
 }
 
 function setRadio(name: string, value: string): void { const input = document.querySelector<HTMLInputElement>(`input[name="${name}"][value="${value}"]`); if (input) input.checked = true; }
 
 async function startOver(): Promise<void> {
+  if (isDemo) { await resetDemo(); return; }
   if (!confirm('Start over? This removes the saved frames from this device. Export the project first if you need a copy.')) return;
-  await clearProject(); setFrames([]); video.removeAttribute('src'); video.load(); duration = 0;
+  await clearProject(storageNamespace); setFrames([]); video.removeAttribute('src'); video.load(); duration = 0;
   workspace.hidden = true; proofPanel.hidden = true; printPanel.hidden = true; loadPanel.hidden = false; loadPanel.classList.remove('saved-state');
-  $('#load-title').textContent = 'Bring in one short clip'; loadPanel.querySelector('p')!.innerHTML = `MP4, WebM, or MOV supported by your browser. Up to <span id="durationCap">${maxDuration}</span> seconds. We keep only extracted frames, never the source video.`;
+  $('#load-title').textContent = 'Choose one short video'; loadPanel.querySelector('p')!.innerHTML = `MP4, WebM, or MOV supported by your browser. Up to <span id="durationCap">${maxDuration}</span> seconds. We keep only extracted frames, never the source video.`;
   ($('#startOver') as HTMLButtonElement).hidden = true; fileInput.value = ''; updateRoute(1); status.replaceChildren();
 }
 
@@ -496,7 +593,17 @@ function buildPrintRoot(): void {
   });
 }
 
-function printProof(): void { buildPrintRoot(); updateRoute(5); requestAnimationFrame(() => window.print()); void persistSettings(); }
+function printProof(): void {
+  if (frames.length > 24 && !unlocked) {
+    $('#printRoot').replaceChildren();
+    showPaidGate(frames.length, 'print');
+    return;
+  }
+  buildPrintRoot();
+  updateRoute(5);
+  requestAnimationFrame(() => window.print());
+  void persistSettings();
+}
 
 async function exportProject(): Promise<void> {
   if (!frames.length) return;
@@ -516,14 +623,37 @@ async function importProject(file?: File): Promise<void> {
     if (file.size > 80_000_000) throw new Error('large');
     const data = JSON.parse(await file.text()) as { version: number; product: string; settings: ProjectSettings; frames: string[] };
     if (data.version !== 1 || data.product !== 'flipbook-proof' || !Array.isArray(data.frames) || data.frames.length < 2 || data.frames.length > 60) throw new Error('format');
-    const importedFrames = await Promise.all(data.frames.map(async (value) => { if (!value.startsWith('data:image/')) throw new Error('image'); return (await fetch(value)).blob(); }));
+    if (!validImportedSettings(data.settings)) throw new Error('settings');
+    const importedFrames = await Promise.all(data.frames.map(async (value) => {
+      if (typeof value !== 'string' || !/^data:image\/(png|jpe?g|webp|gif|svg\+xml)[;,]/i.test(value)) throw new Error('image');
+      const blob = await (await fetch(value)).blob();
+      if (blob.type === 'image/svg+xml') {
+        const markup = await blob.text();
+        if (/<(?:script|foreignObject)|\son[a-z]+\s*=|(?:href|src)\s*=|url\s*\(/i.test(markup)) throw new Error('unsafe-image');
+        return new Blob([markup], { type: 'image/svg+xml' });
+      }
+      return blob;
+    }));
     sourceName = safeFilename(data.settings.name); duration = data.settings.sourceDuration; crop = normalizeCrop(data.settings.crop); setFrames(importedFrames);
     ($('#onionMode') as HTMLSelectElement).value = data.settings.onionMode; ($('#onionOpacity') as HTMLInputElement).value = String(data.settings.onionOpacity);
+    setRadio('frameCount', String(importedFrames.length));
     setRadio('pageSize', data.settings.pageSize); setRadio('bindingSide', data.settings.bindingSide); setRadio('pageOrder', data.settings.pageOrder);
-    await saveProject(currentProject()); renderAllFrames(); ($('#startOver') as HTMLButtonElement).hidden = false;
-    showStatus('success', `Imported ${frames.length} frames. They are now saved on this device.`); proofPanel.scrollIntoView({ block: 'start' });
+    await saveProject(currentProject(), storageNamespace); renderAllFrames(); ($('#startOver') as HTMLButtonElement).hidden = isDemo;
+    showStatus('success', frames.length > 24 && !unlocked
+      ? `Imported ${frames.length} frames. You can inspect and export them. Plus is required to print all ${frames.length} pages.`
+      : isDemo ? `Imported ${frames.length} frames into this demo.` : `Imported ${frames.length} frames. They are now saved on this device.`);
+    proofPanel.scrollIntoView({ block: 'start' });
   } catch { showStatus('error', 'That project file could not be imported. Choose a Flipbook Proof JSON export under 80 MB.'); }
   finally { ($('#importProject') as HTMLInputElement).value = ''; }
+}
+
+function validImportedSettings(settings: ProjectSettings | undefined): settings is ProjectSettings {
+  if (!settings || typeof settings.name !== 'string' || !settings.name.trim()) return false;
+  if (![settings.sourceDuration, settings.start, settings.end, settings.onionOpacity].every(Number.isFinite)) return false;
+  if (!settings.crop || ![settings.crop.x, settings.crop.y, settings.crop.width, settings.crop.height].every(Number.isFinite)) return false;
+  if (!['previous', 'next', 'both', 'off'].includes(settings.onionMode)) return false;
+  if (!['A4', 'letter'].includes(settings.pageSize) || !['left', 'right'].includes(settings.bindingSide) || !['forward', 'reverse'].includes(settings.pageOrder)) return false;
+  return settings.sourceDuration > 0 && settings.start >= 0 && settings.end > settings.start && settings.onionOpacity >= 8 && settings.onionOpacity <= 50;
 }
 
 async function refreshLicense(force: boolean): Promise<void> {
@@ -536,6 +666,28 @@ function updateLicenseUi(valid: boolean, message: string): void {
   $('#licenseState').textContent = message; $('#licenseState').classList.toggle('unlocked', valid);
   ($('#buyLink') as HTMLAnchorElement).hidden = valid; ($('#removeLicense') as HTMLButtonElement).hidden = !storedToken();
   document.querySelectorAll<HTMLInputElement>('input[name="frameCount"]').forEach((input) => { const isPaid = Number(input.value) > 24; input.closest('label')?.classList.toggle('locked', isPaid && !valid); input.setAttribute('aria-description', isPaid && !valid ? 'Requires Plus' : ''); });
+  updatePaidActions();
+}
+
+function updatePaidActions(): void {
+  const printButton = $('#printProof') as HTMLButtonElement;
+  const gate = $('#printGateMessage');
+  const gated = frames.length > 24 && !unlocked;
+  printButton.textContent = gated ? `Buy Plus to print ${frames.length} pages` : 'Print proof / save PDF';
+  gate.hidden = !gated;
+  gate.textContent = gated ? `You can inspect and export all ${frames.length} frames for free. Plus is required to print more than 24 pages.` : '';
+}
+
+function showPaidGate(count: number, action: 'extract' | 'print'): void {
+  const restore = document.querySelector<HTMLDetailsElement>('.license-card details')!;
+  restore.open = true;
+  location.hash = 'unlock';
+  const actionName = action === 'extract' ? 'extract' : 'print';
+  showStatus('warning', `Plus is required to ${actionName} ${count} pages. Buy Plus or restore a license.`);
+  requestAnimationFrame(() => {
+    const buyLink = $('#buyLink') as HTMLAnchorElement;
+    (buyLink.hidden ? $('#licenseToken') : buyLink).focus();
+  });
 }
 
 async function submitLicense(event: Event): Promise<void> {
