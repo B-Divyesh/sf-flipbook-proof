@@ -189,8 +189,8 @@
       "degree": 10
     },
     {
-      "id": "src_main_updatepace",
-      "label": "updatePace()",
+      "id": "src_main_refreshlicense",
+      "label": "refreshLicense()",
       "degree": 8
     },
     {
@@ -199,8 +199,8 @@
       "degree": 8
     },
     {
-      "id": "src_main_refreshlicense",
-      "label": "refreshLicense()",
+      "id": "src_proof_normalizecrop",
+      "label": "normalizeCrop()",
       "degree": 8
     },
     {
@@ -209,13 +209,13 @@
       "degree": 8
     },
     {
-      "id": "src_proof_normalizecrop",
-      "label": "normalizeCrop()",
+      "id": "src_main_updatepace",
+      "label": "updatePace()",
       "degree": 8
     },
     {
-      "id": "src_main_handlemetadata",
-      "label": "handleMetadata()",
+      "id": "src_main_restoresavedproject",
+      "label": "restoreSavedProject()",
       "degree": 7
     }
   ],
@@ -226,17 +226,6 @@
       "source_files": [
         "src/main.ts",
         "src/license.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "bridges separate communities"
-    },
-    {
-      "source": "loadVideo()",
-      "target": "safeFilename()",
-      "source_files": [
-        "src/main.ts",
-        "src/proof.ts"
       ],
       "confidence": "EXTRACTED",
       "relation": "calls",
@@ -254,7 +243,7 @@
       "why": "bridges separate communities"
     },
     {
-      "source": "restoreSavedProject()",
+      "source": "importProject()",
       "target": "normalizeCrop()",
       "source_files": [
         "src/main.ts",
@@ -266,6 +255,17 @@
     },
     {
       "source": "importProject()",
+      "target": "safeFilename()",
+      "source_files": [
+        "src/main.ts",
+        "src/proof.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "restoreSavedProject()",
       "target": "normalizeCrop()",
       "source_files": [
         "src/main.ts",
