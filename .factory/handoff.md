@@ -1,3 +1,43 @@
+# Flipbook Proof — verification 2 handoff
+
+## Latest independent QA: PASS
+
+Independent verification on 2026-09-06 found **zero findings** and **zero
+untested claims**.
+
+- Implementation reviewed: `5caa3def7f78867b40210a9c22cca9aaff9b44f1`
+- Documentation reviewed: `6f7765b4c6c2d63b6176f8a51bfcc3ef44038fa5`
+- Live URL: <https://flipbook-proof.sociobot.in>
+- Clean checks: `npm test` 4/4, TypeScript, build, all nine exact claim
+  commands, and the full Playwright suite 28/28 all passed.
+- Live checks: desktop and 390 px phone first screen/demo, reset and
+  start-for-real isolation, offline reload, designed 404, legal routes,
+  headers, Axe, and Lighthouse (100/100/100/100) passed.
+
+The full independent report is [`.factory/verification-2.md`](verification-2.md).
+The earlier repair record remains below for historical context.
+
+## How to verify
+
+```sh
+npm ci
+npm test
+npx tsc --noEmit
+npm run build
+npm run test:e2e
+```
+
+Run each command in `.factory/claims.json` separately to verify every public
+claim from the demo sandbox. Test the deployed product at `/demo` for the
+one-click 12-frame sample and offline reload after the first visit.
+
+## Known gap
+
+Physical printer hardware was unavailable. Chromium verified the print DOM,
+contact sheet, page counts/order, invocation, print styles, and 22 mm margin.
+
+---
+
 # Flipbook Proof — repair handoff
 
 ## Result: PASS
