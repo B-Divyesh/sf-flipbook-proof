@@ -1,3 +1,41 @@
+# Flipbook Proof — review 1 handoff
+
+## Latest independent QA: PASS
+
+Review 1 on 2026-09-06 found **zero findings** and **zero untested public
+claims**.
+
+- Implementation reviewed: `5caa3def7f78867b40210a9c22cca9aaff9b44f1`
+- Documentation base reviewed: `464455f7e94318e803d6b7901ade7c54cb34aaf9`
+- Live URL: <https://flipbook-proof.sociobot.in>
+- Clean checks: `npm test` 4/4, TypeScript, build, all nine exact claim
+  commands, and the full Playwright suite 28/28 all passed.
+- Live checks: fresh desktop and 390 × 844 phone first screen/demo, reset and
+  start-for-real separation, offline reload, designed 404, legal routes,
+  headers, Axe, and Lighthouse (100/100/100/100) passed.
+
+The full report is [`.factory/review-1.md`](review-1.md). Physical printer
+hardware was unavailable; Chromium verified the print DOM, invocation,
+contact sheet, page counts/order, print styles, and 22 mm margin. There is no
+product backend; projects remain in separate browser-local IndexedDB
+namespaces.
+
+## How to verify
+
+```sh
+npm ci
+npm test
+npx tsc --noEmit
+npm run build
+npm run test:e2e
+```
+
+Run every command in `.factory/claims.json` separately to verify every public
+claim through the demo sandbox. Test the deployment at `/demo` for the
+one-click 12-frame sample and offline reload after the first visit.
+
+---
+
 # Flipbook Proof — verification 2 handoff
 
 ## Latest independent QA: PASS
