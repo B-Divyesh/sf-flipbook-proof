@@ -199,13 +199,13 @@
       "degree": 15
     },
     {
-      "id": "tsconfig_compileroptions",
-      "label": "compilerOptions",
+      "id": "src_main_importproject",
+      "label": "importProject()",
       "degree": 12
     },
     {
-      "id": "src_main_importproject",
-      "label": "importProject()",
+      "id": "tsconfig_compileroptions",
+      "label": "compilerOptions",
       "degree": 12
     },
     {
@@ -224,11 +224,6 @@
       "degree": 8
     },
     {
-      "id": "src_main_updatepace",
-      "label": "updatePace()",
-      "degree": 8
-    },
-    {
       "id": "src_main_restoreproject",
       "label": "restoreProject()",
       "degree": 8
@@ -237,15 +232,42 @@
       "id": "src_main_resetdemo",
       "label": "resetDemo()",
       "degree": 8
+    },
+    {
+      "id": "src_main_updatepace",
+      "label": "updatePace()",
+      "degree": 8
     }
   ],
   "surprises": [
+    {
+      "source": "extractFrames()",
+      "target": "saveProject()",
+      "source_files": [
+        "src/main.ts",
+        "src/db.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
     {
       "source": "extractFrames()",
       "target": "frameTimes()",
       "source_files": [
         "src/main.ts",
         "src/proof.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "persistSettings()",
+      "target": "saveProject()",
+      "source_files": [
+        "src/main.ts",
+        "src/db.ts"
       ],
       "confidence": "EXTRACTED",
       "relation": "calls",
@@ -268,28 +290,6 @@
       "source_files": [
         "src/main.ts",
         "src/proof.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "bridges separate communities"
-    },
-    {
-      "source": "extractFrames()",
-      "target": "saveProject()",
-      "source_files": [
-        "src/main.ts",
-        "src/db.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "bridges separate communities"
-    },
-    {
-      "source": "persistSettings()",
-      "target": "saveProject()",
-      "source_files": [
-        "src/main.ts",
-        "src/db.ts"
       ],
       "confidence": "EXTRACTED",
       "relation": "calls",
