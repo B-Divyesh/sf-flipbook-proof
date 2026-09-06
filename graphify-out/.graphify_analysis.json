@@ -1,33 +1,42 @@
 {
   "communities": {
     "0": [
-      "src_license",
-      "src_license_capturereturnedlicense",
-      "src_license_checkouturl",
-      "src_license_isoptimisticallyunlocked",
-      "src_license_removelicense",
-      "src_license_storedtoken",
-      "src_license_storelicense",
-      "src_license_verdict",
-      "src_license_verifylicense",
       "src_main",
+      "src_main_blobtodataurl",
+      "src_main_buildprintroot",
+      "src_main_canvasblob",
       "src_main_crop",
+      "src_main_currentproject",
+      "src_main_currentsettings",
+      "src_main_exportproject",
+      "src_main_extractframes",
       "src_main_fileinput",
       "src_main_frames",
       "src_main_frameurls",
       "src_main_loadpanel",
+      "src_main_persistsettings",
+      "src_main_prefersreducedmotion",
       "src_main_printpanel",
+      "src_main_printproof",
       "src_main_progressbar",
       "src_main_progresswrap",
       "src_main_proofpanel",
-      "src_main_refreshlicense",
+      "src_main_radiovalue",
       "src_main_registerserviceworker",
+      "src_main_renderallframes",
+      "src_main_renderproof",
+      "src_main_seekvideo",
+      "src_main_selectedcount",
+      "src_main_selectframe",
+      "src_main_showpaidgate",
       "src_main_showupdate",
       "src_main_status",
-      "src_main_submitlicense",
-      "src_main_updatelicenseui",
+      "src_main_updatepaidactions",
+      "src_main_updateroute",
       "src_main_video",
-      "src_main_workspace"
+      "src_main_workspace",
+      "src_proof_framelabel",
+      "src_proof_pagenumbers"
     ],
     "1": [
       "axe_core_playwright",
@@ -35,6 +44,7 @@
       "package_devdependencies",
       "package_devdependencies_axe_core_playwright",
       "package_devdependencies_playwright_test",
+      "package_devdependencies_types_node",
       "package_devdependencies_typescript",
       "package_devdependencies_vite",
       "package_devdependencies_vitest",
@@ -49,6 +59,7 @@
       "package_type",
       "package_version",
       "playwright_test",
+      "types_node",
       "typescript",
       "vite",
       "vitest"
@@ -77,35 +88,12 @@
       "tsconfig_include"
     ],
     "3": [
-      "src_db_clearproject",
-      "src_db_loadproject",
-      "src_db_opendb",
-      "src_db_saveproject",
-      "src_main_canvasblob",
-      "src_main_currentproject",
-      "src_main_extractframes",
-      "src_main_importproject",
-      "src_main_persistsettings",
-      "src_main_prefersreducedmotion",
-      "src_main_printproof",
-      "src_main_renderallframes",
-      "src_main_renderproof",
-      "src_main_restoresavedproject",
-      "src_main_seekvideo",
-      "src_main_selectframe",
-      "src_main_setframes",
-      "src_main_setradio",
-      "src_main_startover",
-      "src_main_updateroute",
-      "src_proof_framelabel"
-    ],
-    "4": [
       "src_db",
+      "src_db_db_names",
       "src_db_projectsettings",
+      "src_db_storagenamespace",
       "src_db_storedproject",
       "src_main_applycroppreset",
-      "src_main_buildprintroot",
-      "src_main_radiovalue",
       "src_main_readcropinputs",
       "src_main_synccropinputs",
       "src_proof",
@@ -115,20 +103,34 @@
       "src_proof_frame_options",
       "src_proof_frametimes",
       "src_proof_normalizecrop",
-      "src_proof_pagenumbers",
       "src_proof_pageorder",
-      "src_proof_safefilename",
       "tests_proof_test"
     ],
-    "5": [
-      "src_main_blobtodataurl",
-      "src_main_currentsettings",
-      "src_main_exportproject",
-      "src_main_handlemetadata",
+    "4": [
+      "src_db_loadproject",
+      "src_db_opendb",
+      "src_db_saveproject",
+      "src_main_createsampleproject",
+      "src_main_dataurltoblob",
+      "src_main_importproject",
+      "src_main_initializeproject",
       "src_main_loadvideo",
-      "src_main_selectedcount",
-      "src_main_setupevents",
+      "src_main_restoreproject",
+      "src_main_seeddemo",
+      "src_main_setradio",
       "src_main_showstatus",
+      "src_main_validimportedsettings",
+      "src_proof_safefilename"
+    ],
+    "5": [
+      "src_db_clearproject",
+      "src_license_removelicense",
+      "src_main_handlemetadata",
+      "src_main_leavedemo",
+      "src_main_resetdemo",
+      "src_main_setframes",
+      "src_main_setupevents",
+      "src_main_startover",
       "src_main_timelinevalues",
       "src_main_updatenetworkstate",
       "src_main_updatepace",
@@ -136,47 +138,65 @@
       "src_proof_formatduration"
     ],
     "6": [
+      "src_license",
+      "src_license_capturereturnedlicense",
+      "src_license_checkouturl",
+      "src_license_configurelicensestorage",
+      "src_license_isoptimisticallyunlocked",
+      "src_license_storagekey",
+      "src_license_storedtoken",
+      "src_license_storelicense",
+      "src_license_verdict",
+      "src_license_verifylicense",
+      "src_main_refreshlicense",
+      "src_main_submitlicense",
+      "src_main_updatelicenseui"
+    ],
+    "7": [
       "public_sw",
       "public_sw_cachefirst",
       "public_sw_networkfirst",
       "public_sw_precache"
     ],
-    "7": [
-      "playwright_config"
-    ],
     "8": [
-      "src_vite_env_d"
+      "tests_e2e_app_spec",
+      "tests_e2e_app_spec_importproject",
+      "tests_e2e_app_spec_projectjson"
     ],
     "9": [
-      "tests_e2e_app_spec"
+      "playwright_config"
     ],
     "10": [
+      "src_vite_env_d"
+    ],
+    "11": [
       "vite_config"
     ]
   },
   "cohesion": {
-    "0": 0.12535612535612536,
-    "1": 0.09090909090909091,
+    "0": 0.10158730158730159,
+    "1": 0.08333333333333333,
     "2": 0.09523809523809523,
-    "3": 0.1619047619047619,
-    "4": 0.15789473684210525,
-    "5": 0.2948717948717949,
-    "6": 0.5,
-    "7": 1.0,
+    "3": 0.16911764705882354,
+    "4": 0.2087912087912088,
+    "5": 0.3076923076923077,
+    "6": 0.3076923076923077,
+    "7": 0.5,
     "8": 1.0,
     "9": 1.0,
-    "10": 1.0
+    "10": 1.0,
+    "11": 1.0
   },
   "gods": [
     {
       "id": "src_main_setupevents",
       "label": "setupEvents()",
-      "degree": 20
+      "degree": 22
     },
     {
       "id": "src_main_extractframes",
       "label": "extractFrames()",
-      "degree": 14
+      "degree": 15
     },
     {
       "id": "tsconfig_compileroptions",
@@ -186,26 +206,21 @@
     {
       "id": "src_main_importproject",
       "label": "importProject()",
-      "degree": 10
-    },
-    {
-      "id": "src_main_refreshlicense",
-      "label": "refreshLicense()",
-      "degree": 8
-    },
-    {
-      "id": "src_main_renderallframes",
-      "label": "renderAllFrames()",
-      "degree": 8
-    },
-    {
-      "id": "src_proof_normalizecrop",
-      "label": "normalizeCrop()",
-      "degree": 8
+      "degree": 12
     },
     {
       "id": "src_main_showstatus",
       "label": "showStatus()",
+      "degree": 10
+    },
+    {
+      "id": "src_main_renderallframes",
+      "label": "renderAllFrames()",
+      "degree": 9
+    },
+    {
+      "id": "src_proof_normalizecrop",
+      "label": "normalizeCrop()",
       "degree": 8
     },
     {
@@ -214,23 +229,17 @@
       "degree": 8
     },
     {
-      "id": "src_main_restoresavedproject",
-      "label": "restoreSavedProject()",
-      "degree": 7
+      "id": "src_main_restoreproject",
+      "label": "restoreProject()",
+      "degree": 8
+    },
+    {
+      "id": "src_main_resetdemo",
+      "label": "resetDemo()",
+      "degree": 8
     }
   ],
   "surprises": [
-    {
-      "source": "setupEvents()",
-      "target": "removeLicense()",
-      "source_files": [
-        "src/main.ts",
-        "src/license.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "bridges separate communities"
-    },
     {
       "source": "extractFrames()",
       "target": "frameTimes()",
@@ -254,8 +263,8 @@
       "why": "bridges separate communities"
     },
     {
-      "source": "importProject()",
-      "target": "safeFilename()",
+      "source": "restoreProject()",
+      "target": "normalizeCrop()",
       "source_files": [
         "src/main.ts",
         "src/proof.ts"
@@ -265,11 +274,22 @@
       "why": "bridges separate communities"
     },
     {
-      "source": "restoreSavedProject()",
-      "target": "normalizeCrop()",
+      "source": "extractFrames()",
+      "target": "saveProject()",
       "source_files": [
         "src/main.ts",
-        "src/proof.ts"
+        "src/db.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "persistSettings()",
+      "target": "saveProject()",
+      "source_files": [
+        "src/main.ts",
+        "src/db.ts"
       ],
       "confidence": "EXTRACTED",
       "relation": "calls",
